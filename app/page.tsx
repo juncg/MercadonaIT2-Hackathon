@@ -12,10 +12,11 @@ import {
     Store,
     Truck,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 
-export default async function Home() {
+export default function Home() {
+    const imagesUrl = ["", "/personarizz.jpg", "/persona2.jpg", "/persona3.jpg", "/persona4.jpg"];
     return (
         <div className="min-h-screen">
             {/* Hero Section */}
@@ -68,7 +69,7 @@ export default async function Home() {
                                                 className="relative w-8 h-8 rounded-full border-2 border-white overflow-hidden"
                                             >
                                                 <Image
-                                                    src="/plan-kids.jpg"
+                                                    src={imagesUrl[i]}
                                                     alt="User Avatar"
                                                     fill
                                                     className="object-cover"
@@ -91,8 +92,8 @@ export default async function Home() {
                                             src="/comida-sana-menu.jpg"
                                             alt="Not loading"
                                             fill
-                                            className="object-contain"
-                                        ></Image>
+                                            className="object-contain">
+                                        </Image>
                                     </div>
                                 </div>
                             </div>
@@ -125,10 +126,10 @@ export default async function Home() {
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center space-y-4 mb-16">
                         <h2 className="text-4xl font-bold font-heading text-gray-900">
-                            Productos destacados
+                            Menús destacados
                         </h2>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Descubre nuestros productos más populares con la
+                            Descubre nuestros menús más populares con la
                             mejor calidad garantizada
                         </p>
                     </div>
@@ -136,24 +137,28 @@ export default async function Home() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {[
                             {
-                                name: "Frutas frescas",
-                                price: "desde 0,99€",
-                                category: "Frutas",
-                            },
-                            {
-                                name: "Verduras de temporada",
-                                price: "desde 1,20€",
-                                category: "Verduras",
-                            },
-                            {
-                                name: "Carne premium",
+                                name: "Plan Mediterráneo",
                                 price: "desde 8,99€",
-                                category: "Carnicería",
+                                category: "Mediterráneo",
+                                image: "/plan-mediterraneo.jpg",
                             },
                             {
-                                name: "Pescado fresco",
+                                name: "Plan Vegetariano",
+                                price: "desde 10,20€",
+                                category: "Verduras",
+                                image: "/plan-vegetariano.jpeg",
+                            },
+                            {
+                                name: "Plan Kids",
+                                price: "desde 6,99€",
+                                category: "Kids",
+                                image: "/plan-kids.jpg"
+                            },
+                            {
+                                name: "Plan Casero",
                                 price: "desde 12,50€",
-                                category: "Pescadería",
+                                category: "Comida Casera",
+                                image: "/plan-casero.jpg"
                             },
                         ].map((product, index) => (
                             <Card
@@ -161,8 +166,13 @@ export default async function Home() {
                                 className="group hover:shadow-lg transition-all duration-300 cursor-pointer"
                             >
                                 <CardContent className="p-0">
-                                    <div className="bg-gray-100 h-48 flex items-center justify-center rounded-t-lg">
-                                        <Package className="h-16 w-16 text-gray-400" />
+                                    <div className="h-48 relative rounded-t-lg overflow-hidden bg-gray-100">
+                                        <Image
+                                            src={product.image}
+                                            alt={product.name}
+                                            fill
+                                            className="object-cover"
+                                        />
                                     </div>
                                     <div className="p-6 space-y-3">
                                         <Badge
@@ -188,13 +198,13 @@ export default async function Home() {
                     </div>
 
                     <div className="text-center mt-12">
-                        <Link href="/products">
+                        <Link href="/planes">
                             <Button
                                 variant="outline"
                                 size="lg"
                                 className="px-8"
                             >
-                                Ver todos los productos
+                                Ver todos los planes alimenticios
                             </Button>
                         </Link>
                     </div>
