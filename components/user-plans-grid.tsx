@@ -6,27 +6,13 @@ type MealMap = Record<string, string[]>
 type DayPlan = Record<string, MealMap>
 type StoredPlans = Record<string, DayPlan>
 
-function formatPlan(dayPlan: DayPlan): string {
-    const days = Object.keys(dayPlan)
-    if (days.length === 0) return 'Vacío'
-    return days
-        .map(day => {
-            const meals = Object.keys(dayPlan[day] ?? {})
-            const mealsText = meals
-                .map(meal => {
-                    const products = dayPlan[day][meal] ?? []
-                    if (products.length === 0) return `    ${meal}:`
-                    return `    ${meal}:\n${products.map(p => `      - ${p}`).join('\n')}`
-                })
-                .join('\n')
-            return `${day}:\n${mealsText}`
-        })
-        .join('\n\n')
+function formatPlan(name: string): string {
+    return `${name}, customizado por ti.`
 }
 
 export default function UserPlansGrid(): JSX.Element | null {
     const [items, setItems] = useState<
-        { id: string; title: string; imageUrl: string; expandedContent: string }[]
+        { id: string; title: string; imageUrl: string; expandedContent: string; actionHref?: string }[]
     >([])
 
     useEffect(() => {
@@ -41,7 +27,7 @@ export default function UserPlansGrid(): JSX.Element | null {
                 id: name,
                 title: name,
                 imageUrl: '/cesta-placeholder.jpg',
-                expandedContent: formatPlan(plan),
+                expandedContent: formatPlan(name),
                 actionHref: `/calendario?plan=${encodeURIComponent(name)}`,
             }))
             setItems(mapped)
