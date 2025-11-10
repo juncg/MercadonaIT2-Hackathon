@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
     return (
         <div className="min-h-screen">
             {/* Hero Section */}
