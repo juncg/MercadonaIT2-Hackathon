@@ -53,12 +53,10 @@ export default function UserPlansGrid(): JSX.Element | null {
     if (items.length === 0) return null
 
     return (
-        <div className="max-w-6xl mx-auto py-8 px-6">
-            <section className="bg-card rounded-lg p-8 shadow-sm mt-12">
-                <h2 className="text-2xl font-semibold mb-4">Tus planes creados</h2>
-                <p className="text-muted-foreground mb-6">Aquí están los planes que has guardado.</p>
-                <ExpandableGrid items={items} />
-            </section>
+        <div className="max-w-6xl mx-auto py-4 px-6 mt-10">
+            <h2 className="text-2xl font-semibold mb-4">Tus planes creados</h2>
+            <p className="text-muted-foreground mb-6">Aquí están los planes que has guardado.</p>
+            <ExpandableGrid items={items} />
         </div>
     )
 }

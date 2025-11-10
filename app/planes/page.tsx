@@ -63,8 +63,8 @@ export default function Planes() {
 
                 <ExpandableGrid items={gridItems} />
 
-                <h1 className="text-2xl font-semibold mb-4 mt-16">
-                    O si ninguno de nuestros planes te convence, personaliza el tuyo:
+                <h1 className="text-2xl font-semibold mb-4 mt-25">
+                    O si ninguno de nuestros planes te convence, crea el tuyo:
                 </h1>
 
                 <Button
@@ -76,7 +76,7 @@ export default function Planes() {
                         href={"/calendario"}
                     >
                         <ShoppingCart className="mr-2 h-5 w-5" />
-                        Personaliza tu Plan Alimenticio
+                        Crea tu Plan Alimenticio
                     </Link>
                 </Button>
                 <UserPlansGrid />
