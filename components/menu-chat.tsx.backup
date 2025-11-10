@@ -68,9 +68,7 @@ export function MenuChat({ onApplySuggestion }: MenuChatProps) {
     };
 
     // Función para intentar corregir el formato de la respuesta
-    const attemptFormatCorrection = async (
-        content: string
-    ): Promise<string> => {
+    const attemptFormatCorrection = async (content: string): Promise<string> => {
         const allProducts = await searchProducts("");
         const correctedLines: string[] = [];
 
@@ -132,8 +130,9 @@ export function MenuChat({ onApplySuggestion }: MenuChatProps) {
         return content; // Si no podemos corregir, devolver original
     };
 
-    const buildSystemPrompt = async () => {
-        const allProducts = await searchProducts("");
+    const buildSystemPrompt = () => {
+        // Obtener todos los productos del catálogo organizados por categoría
+        const allProducts = searchProducts(""); // Esto devuelve todos los productos
 
         const productsByCategory = {
             "main-dishes": allProducts.filter(
@@ -188,8 +187,10 @@ NO añadas explicaciones. NO uses otros formatos. COPIA los nombres exactos.`;
         setIsLoading(true);
 
         try {
+            // Añadir ejemplos de formato correcto al historial para entrenar el modelo
+            try {
             const systemPrompt = await buildSystemPrompt();
-
+            
             const trainingExamples: OllamaChatMessage[] = [
                 {
                     role: "user",
@@ -543,20 +544,20 @@ NO añadas explicaciones. NO uses otros formatos. COPIA los nombres exactos.`;
         setSuggestedMenus((prev) => prev.filter((menu) => menu.id !== menuId));
     };
 
-    const handleAddMenuToCart = async (productId: string, quantity: number) => {
-        const allProducts = await searchProducts("");
-        const product = allProducts.find((p) => p.id === productId);
-        const productName = product?.name || "";
-
+    const handleAddMenuToCart = (productId: string, quantity: number) => {
         const suggestion: MenuSuggestion = {
             action: "add",
             productId,
-            productName,
+            productName:
+                searchProducts("").find((p) => p.id === productId)?.name || "",
             reason: "Añadido desde menú sugerido",
             quantity,
         };
         onApplySuggestion(suggestion);
 
+        // Mostrar notificación
+        const productName =
+            searchProducts("").find((p) => p.id === productId)?.name || "";
         setRecentlyAdded((prev) => [...prev, `${productName} (${quantity})`]);
         setTimeout(() => {
             setRecentlyAdded((prev) =>

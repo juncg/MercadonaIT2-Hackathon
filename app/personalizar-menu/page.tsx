@@ -18,12 +18,9 @@ import { MenuChat } from "@/components/menu-chat";
 import { MenuSummary } from "@/components/menu-summary";
 import { ProductGrid } from "@/components/product-card";
 import { MenuSuggestion, MercadonaProduct } from "@/lib/menu-types";
-import {
-    MERCADONA_PRODUCTS,
-    getProductsByCategory,
-    searchProducts,
-} from "@/lib/mercadona-products";
+import { getMercadonaProducts, getProductById } from "@/lib/mercadona-products";
 import { useMenu } from "@/lib/use-menu";
+import { useEffect } from "react";
 
 const CATEGORIES = [
     { id: "all", name: "Todos los productos" },
@@ -51,24 +48,44 @@ export default function PersonalizarMenu() {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [activeTab, setActiveTab] = useState("products");
+    const [allProducts, setAllProducts] = useState<MercadonaProduct[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const loadProducts = async () => {
+            setIsLoading(true);
+            try {
+                const products = await getMercadonaProducts();
+                setAllProducts(products);
+            } catch (error) {
+                console.error("Error loading products:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadProducts();
+    }, []);
 
     const filteredProducts = useMemo(() => {
-        let products = MERCADONA_PRODUCTS;
+        let products = allProducts;
 
         // Filtrar por categoría
         if (selectedCategory !== "all") {
-            products = getProductsByCategory(
-                selectedCategory as MercadonaProduct["category"]
-            );
+            products = products.filter((p) => p.category === selectedCategory);
         }
 
         // Filtrar por búsqueda
         if (searchQuery.trim()) {
-            products = searchProducts(searchQuery);
+            const query = searchQuery.toLowerCase();
+            products = products.filter(
+                (p) =>
+                    p.name.toLowerCase().includes(query) ||
+                    p.category.toLowerCase().includes(query)
+            );
         }
 
         return products;
-    }, [selectedCategory, searchQuery]);
+    }, [selectedCategory, searchQuery, allProducts]);
 
     const handleAddProduct = (product: MercadonaProduct) => {
         addProduct(product);
@@ -78,10 +95,8 @@ export default function PersonalizarMenu() {
         removeProduct(productId);
     };
 
-    const handleApplySuggestion = (suggestion: MenuSuggestion) => {
-        const product = MERCADONA_PRODUCTS.find(
-            (p) => p.id === suggestion.productId
-        );
+    const handleApplySuggestion = async (suggestion: MenuSuggestion) => {
+        const product = await getProductById(suggestion.productId);
         if (!product) return;
 
         if (suggestion.action === "add") {
@@ -211,7 +226,14 @@ export default function PersonalizarMenu() {
                                 </div>
 
                                 {/* Grid de productos */}
-                                {filteredProducts.length > 0 ? (
+                                {isLoading ? (
+                                    <div className="text-center py-12">
+                                        <div className="animate-spin h-12 w-12 border-4 border-green-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                                        <p className="text-muted-foreground">
+                                            Cargando productos...
+                                        </p>
+                                    </div>
+                                ) : filteredProducts.length > 0 ? (
                                     <ProductGrid
                                         products={filteredProducts}
                                         menuItems={menu}
@@ -248,9 +270,9 @@ export default function PersonalizarMenu() {
                                 menuItems={menuItems}
                                 totalPrice={totalPrice}
                                 totalItems={totalItems}
-                                onAddProduct={(productId) => {
-                                    const product = MERCADONA_PRODUCTS.find(
-                                        (p) => p.id === productId
+                                onAddProduct={async (productId) => {
+                                    const product = await getProductById(
+                                        productId
                                     );
                                     if (product) addProduct(product);
                                 }}

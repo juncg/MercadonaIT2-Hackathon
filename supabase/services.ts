@@ -1,6 +1,5 @@
 import { Database } from "@/database.types";
 import { MercadonaProduct } from "@/lib/menu-types";
-import { MERCADONA_PRODUCTS } from "@/lib/mercadona-products";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl =
@@ -139,69 +138,4 @@ export async function getProducts() {
     const categories = await response.json();
 
     return categories;
-}
-
-export async function insertMercadonaProducts() {
-    const productsToInsert = MERCADONA_PRODUCTS.map((product) => ({
-        id: parseInt(product.id),
-        name: product.name,
-        price: product.price,
-        category: product.category,
-        image: product.image || null,
-        description: product.description || null,
-        allergens: product.allergens || null,
-        nutritionalInfo: product.nutritionalInfo || null,
-    }));
-
-    const { data, error } = await supabase
-        .from("Alimentos")
-        .insert(productsToInsert)
-        .select();
-
-    if (error) {
-        console.error("Error insertando productos:", error);
-        throw error;
-    }
-
-    console.log(`${data?.length} productos insertados correctamente`);
-    return data;
-}
-
-export async function upsertMercadonaProducts() {
-    const productsToUpsert = MERCADONA_PRODUCTS.map((product) => ({
-        id: parseInt(product.id),
-        name: product.name,
-        price: product.price,
-        category: product.category,
-        image: product.image || null,
-        description: product.description || null,
-        allergens: product.allergens || null,
-        nutritionalInfo: product.nutritionalInfo || null,
-    }));
-
-    const { data, error } = await supabase
-        .from("Alimentos")
-        .upsert(productsToUpsert, { onConflict: "id" })
-        .select();
-
-    if (error) {
-        console.error("Error actualizando productos:", error);
-        throw error;
-    }
-
-    console.log(
-        `${data?.length} productos actualizados/insertados correctamente`
-    );
-    return data;
-}
-
-export async function clearAlimentos() {
-    const { error } = await supabase.from("Alimentos").delete().neq("id", 0);
-
-    if (error) {
-        console.error("Error eliminando productos:", error);
-        throw error;
-    }
-
-    console.log("Todos los productos han sido eliminados");
 }
