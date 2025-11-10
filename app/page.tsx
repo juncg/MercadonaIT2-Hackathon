@@ -13,6 +13,7 @@ import {
     Store,
     Truck,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {
@@ -28,14 +29,14 @@ export default async function Home() {
                                 <Badge className="bg-mercadona-green hover:bg-mercadona-green/90 text-white">
                                     ¡Nuevas ofertas disponibles!
                                 </Badge>
-                                <h1 className="text-5xl lg:text-6xl font-bold font-heading text-gray-900 leading-tight">
+                                <h1 className="text-5xl lg:text-6xl font-bold font-heading leading-tight">
                                     Tu súper de
-                                    <span className="text-mercadona-green">
+                                    <span className="text-stuff-colored">
                                         {" "}
                                         confianza
                                     </span>
                                 </h1>
-                                <p className="text-xl text-gray-600 leading-relaxed">
+                                <p className="text-xl text-mercadona-green leading-relaxed">
                                     Descubre la mejor calidad al mejor precio.
                                     Más de 1.600 tiendas a tu servicio con
                                     productos frescos y la mejor atención.
@@ -71,24 +72,22 @@ export default async function Home() {
                                         ))}
                                     </div>
                                     <span className="text-sm text-gray-600">
-                                        +5M clientes confían en nosotros
+                                        +5 M clientes confían en nosotros
                                     </span>
                                 </div>
                             </div>
                         </div>
 
                         <div className="relative">
-                            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                                 <div className="bg-gradient-to-br from-mercadona-green/80 to-mercadona-green h-96 flex items-center justify-center">
                                     <div className="text-center text-white space-y-4">
-                                        <Package className="h-20 w-20 mx-auto opacity-80" />
-                                        <p className="text-lg font-semibold">
-                                            Imagen de productos frescos
-                                        </p>
-                                        <p className="text-sm opacity-80">
-                                            Frutas, verduras y productos de
-                                            calidad
-                                        </p>
+                                        <Image
+                                            src="/comida-sana-menu.jpg"
+                                            alt="Not loading"
+                                            fill
+                                            className="object-contain"
+                                        ></Image>
                                     </div>
                                 </div>
                             </div>
