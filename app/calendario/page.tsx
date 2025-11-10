@@ -1,5 +1,6 @@
 'use client'
-import React, { JSX, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 
 type Block = {
@@ -12,6 +13,51 @@ type Block = {
 
 const MEALS: string[] = ['Desayuno', 'Comida', 'Cena']
 const DAYS: string[] = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+
+type MealPlan = Record<string, string[]>
+type DayPlan = Record<string, MealPlan>
+type Plan = Record<string, DayPlan>
+
+function createEmptyPlan(planName: string): Plan {
+    const plan: Plan = {}
+    plan[planName] = {}
+    for (const day of DAYS) {
+        plan[planName][day] = {}
+        for (const meal of MEALS) {
+            plan[planName][day][meal] = []
+        }
+    }
+    return plan
+}
+
+function createPlanFromAssignments(planName: string, assignments: Record<string, Block[]>): Plan {
+    const plan = createEmptyPlan(planName)
+    for (const key of Object.keys(assignments)) {
+        const [rowStr, colStr] = key.split('-')
+        const row = Number(rowStr)
+        if (Number.isNaN(row)) continue
+        const meal = MEALS[row]
+        const col = Number(colStr)
+        const day = DAYS[col]
+        if (!meal || !day) continue
+        const items = assignments[key].map(b => b.label)
+        plan[planName][day][meal] = [...plan[planName][day][meal], ...items]
+    }
+    return plan
+}
+
+function savePlanToLocalStorage(plan: Plan) {
+    const existingRaw = localStorage.getItem('meal-plans')
+    const existing: Record<string, DayPlan> = existingRaw ? JSON.parse(existingRaw) : {}
+    const [name] = Object.keys(plan)
+    existing[name] = plan[name]
+    localStorage.setItem('meal-plans', JSON.stringify(existing))
+}
+
+function loadPlansFromLocalStorage(): Record<string, DayPlan> {
+    const raw = localStorage.getItem('meal-plans')
+    return raw ? JSON.parse(raw) : {}
+}
 
 export default function CalendarioPage(): JSX.Element {
     const BLOCKS: Block[] = [
@@ -27,7 +73,7 @@ export default function CalendarioPage(): JSX.Element {
         { id: 'n2', label: 'Pescado al Horno', meals: ['Cena', 'Comida'], color: 'bg-yellow-200', imageUrl: '/cena-pescado.jpg' },
         { id: 'n3', label: 'Verduras Salteadas', meals: ['Cena'], color: 'bg-green-200', imageUrl: '/cena-verduras.jpg' },
     ]
- 
+  
     const [selectedMealIdx, setSelectedMealIdx] = useState<number>(0)
     const poolBlocks = BLOCKS.filter(b => b.meals.includes(MEALS[selectedMealIdx]))
  
@@ -40,6 +86,52 @@ export default function CalendarioPage(): JSX.Element {
         }
         return map
     })
+ 
+    const [planName, setPlanName] = useState<string>('plan1')
+    const searchParams = useSearchParams()
+ 
+    useEffect(() => {
+        const planToLoad = searchParams.get('plan')
+        if (!planToLoad) return
+        const raw = localStorage.getItem('meal-plans')
+        if (!raw) return
+        try {
+            const parsed = JSON.parse(raw) as Record<string, Record<string, Record<string, string[]>>>
+            const dayPlan = parsed[planToLoad]
+            if (!dayPlan) return
+            setPlanName(planToLoad)
+ 
+            const map: Record<string, Block[]> = {}
+            for (let r = 0; r < MEALS.length; r++) {
+                for (let c = 0; c < DAYS.length; c++) {
+                    map[`${r}-${c}`] = []
+                }
+            }
+ 
+            for (let c = 0; c < DAYS.length; c++) {
+                const day = DAYS[c]
+                const mealsForDay = dayPlan[day] ?? {}
+                for (let r = 0; r < MEALS.length; r++) {
+                    const meal = MEALS[r]
+                    const products = mealsForDay[meal] ?? []
+                    for (const label of products) {
+                        const block = BLOCKS.find(b => b.label === label)
+                        if (block) map[`${r}-${c}`].push(block)
+                    }
+                }
+            }
+ 
+            setAssignments(map)
+        } catch {
+            // ignore parse errors
+        }
+    }, [searchParams])
+ 
+    const handleSavePlan = () => {
+        const plan = createPlanFromAssignments(planName || 'plan1', assignments)
+        savePlanToLocalStorage(plan)
+        alert('Plan guardado')
+    }
  
     const onDragStart = (e: React.DragEvent, payload: { id: string; source: 'pool' | 'cell'; key?: string; index?: number }) => {
         e.dataTransfer.setData('application/json', JSON.stringify(payload))
@@ -105,7 +197,25 @@ export default function CalendarioPage(): JSX.Element {
 
     return (
         <main className="p-6">
-            <h1 className="text-2xl font-semibold mb-4">Calendario</h1>
+            <div className="flex items-center justify-between mb-4">
+                <h1 className="text-2xl font-semibold">Calendario</h1>
+                <div className="flex items-center gap-2">
+                    <input
+                        value={planName}
+                        onChange={e => setPlanName(e.target.value)}
+                        placeholder="Nombre del plan"
+                        className="px-2 py-1 border rounded text-sm"
+                        aria-label="Nombre del plan"
+                    />
+                    <button
+                        type="button"
+                        onClick={handleSavePlan}
+                        className="px-3 py-1 rounded bg-slate-800 text-white text-sm"
+                    >
+                        Guardar plan
+                    </button>
+                </div>
+            </div>
  
             <div className="flex gap-6 items-start">
                 <div className="overflow-auto border rounded flex-1">
@@ -218,4 +328,4 @@ export default function CalendarioPage(): JSX.Element {
             </div>
         </main>
     )
- }
+}

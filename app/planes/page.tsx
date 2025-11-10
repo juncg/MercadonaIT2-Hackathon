@@ -2,6 +2,7 @@ import { ExpandableGrid } from "@/components/expandable-grid";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import UserPlansGrid from "@/components/user-plans-grid";
 
 export default function Planes() {
     const gridItems = [
@@ -72,12 +73,13 @@ export default function Planes() {
                 >
                     <Link
                         className="flex items-center"
-                        href={"/personalizar-menu"}
+                        href={"/calendario"}
                     >
                         <ShoppingCart className="mr-2 h-5 w-5" />
                         Personaliza tu Plan Alimenticio
                     </Link>
                 </Button>
+                <UserPlansGrid />
             </section>
         </div>
     );
