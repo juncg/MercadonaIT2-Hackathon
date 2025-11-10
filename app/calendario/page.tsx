@@ -165,7 +165,7 @@ export default function CalendarioPage(): JSX.Element {
                             </div>
                         ))}
  
-                        <div className="grid grid-cols-8 bg-mercadona-green">
+                        <div className="grid grid-cols-8 bg-white">
                             <div className="p-3 border-t col-span-1"></div>
                             {DAYS.map((_, i) => (
                                 <div key={i} className="p-2 border-t border-r" />
