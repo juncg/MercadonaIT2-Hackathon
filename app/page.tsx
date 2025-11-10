@@ -70,7 +70,7 @@ export default function Home() {
                                         ))}
                                     </div>
                                     <span className="text-sm text-gray-600">
-                                        +5M clientes confían en nosotros
+                                        +5 M clientes confían en nosotros
                                     </span>
                                 </div>
                             </div>
@@ -84,7 +84,7 @@ export default function Home() {
                                             src="/comida-sana-menu.jpg"
                                             alt="Not loading"
                                             fill
-                                            className="object-cover">
+                                            className="object-contain">
                                         </Image>
                                     </div>
                                 </div>
