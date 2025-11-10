@@ -56,8 +56,10 @@ export default function CartPage() {
     return acc;
   }, 0);
 
+  const precioUnitario = 4.99;
+  const subtotal = totalProducts * precioUnitario;
+
   const envio = totalProducts > 0 ? 5 : 0;
-  const subtotal = 0; // prices not available in stored plans
   const total = subtotal + envio;
 
   const isCartEmpty = planNames.length === 0;
