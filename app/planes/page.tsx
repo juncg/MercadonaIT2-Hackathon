@@ -10,14 +10,14 @@ export default function Planes() {
             title: "Plan Mediterráneo",
             imageUrl: "/plan-mediterraneo.jpg",
             expandedContent:
-                "Un plan de alimentación mediterránea saludable con verduras frescas, aceite de oliva y proteínas magras. Perfecto para un estilo de vida equilibrado.",
+                "Un plan de alimentación mediterránea saludable con verduras frescas, aceite de oliva y proteínas magras. Perfecto para un estilo de vida equilibrado. ",
         },
         {
             id: "2",
             title: "Plan Vegetariano",
             imageUrl: "/plan-vegetariano.jpeg",
             expandedContent:
-                "Comida vegetariana, llena de nutrientes y sabor. Excelente para la salud y el cuidado del medio ambiente.",
+                "Comida vegetariana, llena de nutrientes y sabor. La mejor para el tipo de persona que valora el medio ambiente. Excelente para la salud y el cuidado del medio ambiente.",
         },
         {
             id: "3",
