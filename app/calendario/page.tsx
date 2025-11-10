@@ -146,7 +146,7 @@ export default function CalendarioPage(): JSX.Element {
                                                         className={`px-3 py-2 rounded shadow-sm cursor-move w-full ${assignedBlock.color ?? 'bg-slate-200'}`}
                                                     >
                                                         <div className="text-sm font-medium">{assignedBlock.label}</div>
-                                                        <div className="relative w-full aspect-square mt-2 overflow-hidden rounded-md shadow-sm">
+                                                        <div className="relative w-full h-20 mt-2 overflow-hidden rounded-md shadow-sm">
                                                             <Image
                                                                 src={assignedBlock.imageUrl ?? '/images/placeholder.png'}
                                                                 alt={assignedBlock.label}
@@ -179,7 +179,7 @@ export default function CalendarioPage(): JSX.Element {
                     onDragOver={allowDrop}
                     onDrop={onDropToPool}
                 >
-                    <div className="text-center font-medium mb-3">Bloques disponibles</div>
+                    <div className="text-center font-medium mb-3">Productos Disponibles</div>
                     <div className="flex items-center justify-center gap-2 mb-3">
                         {MEALS.map((m, idx) => (
                             <button
@@ -203,7 +203,7 @@ export default function CalendarioPage(): JSX.Element {
                             >
                                 <div className="font-medium">{b.label}</div>
                                 <div className="text-xs text-slate-600 mt-1">{b.meals.join(' · ')}</div>
-                                <div className="relative w-full aspect-square mt-2 overflow-hidden rounded-md shadow-sm">
+                                <div className="relative w-50 h-30 mt-2 mx-auto overflow-hidden rounded-md shadow-sm">
                                     <Image
                                         src={b.imageUrl ?? '/images/placeholder.png'}
                                         alt={b.label}
