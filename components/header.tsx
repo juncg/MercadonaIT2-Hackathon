@@ -10,9 +10,9 @@ import { ThemeToggle } from "./ui/theme-toggle";
 
 const links = [
     { href: "/", label: "Inicio" },
-    { href: "/supermarkets", label: "Supermercados" },
     { href: "/planes", label: "Planes" },
     { href: "/test-ollama", label: "Test Ollama" },
+    { href: "/sobre-nosotros", label: "Sobre nosotros" },
 ];
 
 export function Header() {
@@ -28,13 +28,13 @@ export function Header() {
                     className="inline-flex items-center"
                 >
                     <div className="scale-140">
-                    <Image
-                        src={"/mercadinar.png"}
-                        alt={"Logo de Mercadona"}
-                        width={180}
-                        height={40}
-                        priority
-                    />
+                        <Image
+                            src={"/mercadinar.png"}
+                            alt={"Logo de Mercadona"}
+                            width={180}
+                            height={40}
+                            priority
+                        />
                     </div>
                 </Link>
             </div>
