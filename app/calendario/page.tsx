@@ -91,6 +91,42 @@ export default function CalendarioPage(): JSX.Element {
     const searchParams = useSearchParams()
  
     useEffect(() => {
+        const planDataRaw = searchParams.get('planData')
+        if (planDataRaw) {
+            try {
+                const parsed = JSON.parse(planDataRaw)
+                const [name] = Object.keys(parsed)
+                const dayPlan = parsed[name] as Record<string, Record<string, string[]>>
+                const map: Record<string, Block[]> = {}
+                for (let r = 0; r < MEALS.length; r++) {
+                    for (let c = 0; c < DAYS.length; c++) {
+                        map[`${r}-${c}`] = []
+                    }
+                }
+
+                for (let c = 0; c < DAYS.length; c++) {
+                    const day = DAYS[c]
+                    const mealsForDay = dayPlan[day] ?? {}
+                    for (let r = 0; r < MEALS.length; r++) {
+                        const meal = MEALS[r]
+                        const products = mealsForDay[meal] ?? []
+                        for (const label of products) {
+                            const block = BLOCKS.find(b => b.label === label)
+                            if (block) {
+                                map[`${r}-${c}`].push(block)
+                            }
+                        }
+                    }
+                }
+
+                setAssignments(map)
+                setPlanName(name)
+                return
+            } catch {
+                // ignore parse errors and fallthrough to existing load logic
+            }
+        }
+
         const planToLoad = searchParams.get('plan')
         if (!planToLoad) return
         const raw = localStorage.getItem('meal-plans')
