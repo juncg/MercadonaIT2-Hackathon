@@ -1,17 +1,17 @@
 'use client'
 import React, { useState } from 'react'
 import Image from 'next/image'
- 
+
 type Block = {
     id: string
     label: string
     color?: string
     imageUrl?: string
 }
- 
+
 const MEALS: string[] = ['Desayuno', 'Comida', 'Cena']
 const DAYS: string[] = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
- 
+
 export default function CalendarioPage(): JSX.Element {
     const initialBlocks: Block[] = [
         { id: 'b1', label: 'Plan Mediterráneo', color: 'bg-yellow-200', imageUrl: '/plan-mediterraneo.jpg' },
@@ -21,7 +21,7 @@ export default function CalendarioPage(): JSX.Element {
         { id: 'b5', label: 'Plan Gourmet', color: 'bg-yellow-200', imageUrl: '/plan-gourmet.jpg' },
         { id: 'b6', label: 'Plan de Temporada', color: 'bg-green-200', imageUrl: '/plan-de-temporada.jpeg' },
     ]
- 
+
     const [blocks] = useState<Block[]>(initialBlocks)
     const [assignments, setAssignments] = useState<Record<string, Block | null>>(() => {
         const map: Record<string, Block | null> = {}
@@ -32,14 +32,14 @@ export default function CalendarioPage(): JSX.Element {
         }
         return map
     })
- 
+
     const onDragStart = (e: React.DragEvent, payload: { id: string; source: 'pool' | 'cell'; key?: string }) => {
         e.dataTransfer.setData('application/json', JSON.stringify(payload))
         e.dataTransfer.effectAllowed = 'move'
     }
- 
+
     const allowDrop = (e: React.DragEvent) => e.preventDefault()
- 
+
     const onDropToCell = (e: React.DragEvent, row: number, col: number) => {
         e.preventDefault()
         const raw = e.dataTransfer.getData('application/json')
@@ -54,7 +54,7 @@ export default function CalendarioPage(): JSX.Element {
             return next
         })
     }
- 
+
     const onDropToPool = (e: React.DragEvent) => {
         e.preventDefault()
         const raw = e.dataTransfer.getData('application/json')
@@ -68,11 +68,11 @@ export default function CalendarioPage(): JSX.Element {
             })
         }
     }
- 
+
     return (
         <main className="p-6">
             <h1 className="text-2xl font-semibold mb-4">Calendario</h1>
- 
+
             <div className="flex gap-6">
                 {/* calendario */}
                 <div className="overflow-auto border rounded flex-1">
@@ -85,13 +85,13 @@ export default function CalendarioPage(): JSX.Element {
                                 </div>
                             ))}
                         </div>
- 
+
                         {MEALS.map((meal, row) => (
                             <div key={meal} className="grid grid-cols-8">
                                 <div className="p-3 border-r border-b flex items-center font-medium bg-white">
                                     {meal}
                                 </div>
- 
+
                                 {DAYS.map((_, col) => {
                                     const key = `${row}-${col}`
                                     const assigned = assignments[key]
@@ -128,7 +128,7 @@ export default function CalendarioPage(): JSX.Element {
                                 })}
                             </div>
                         ))}
- 
+
                         <div className="grid grid-cols-8">
                             <div className="p-3 border-t col-span-1"></div>
                             {DAYS.map((_, i) => (
@@ -137,7 +137,7 @@ export default function CalendarioPage(): JSX.Element {
                         </div>
                     </div>
                 </div>
- 
+
                 {/* panel derecho: bloques disponibles */}
                 <aside
                     className="w-72 border rounded p-3 bg-white"
@@ -163,11 +163,11 @@ export default function CalendarioPage(): JSX.Element {
                                     />
                                 </div>
                             </div>
-                         ))}
-                         <div className="mt-2 text-sm text-slate-500 text-center">Arrastra a una celda para asignar</div>
-                     </div>
-                 </aside>
-             </div>
-         </main>
-     )
- }
+                        ))}
+                        <div className="mt-2 text-sm text-slate-500 text-center">Arrastra a una celda para asignar</div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    )
+}
