@@ -29,35 +29,39 @@ export default function Home() {
                                     ¡Nuevas ofertas disponibles!
                                 </Badge>
                                 <h1 className="text-5xl lg:text-6xl font-bold font-heading leading-tight">
-                                    Tu súper de
-                                    <span className="text-stuff-colored">
+                                    Tu tripa llena, <br />
+                                    <span className="text-green-900">
                                         {" "}
-                                        confianza
+                                        tu tiempo libre
                                     </span>
                                 </h1>
                                 <p className="text-xl text-mercadona-green leading-relaxed">
-                                    Descubre la mejor calidad al mejor precio.
-                                    Más de 1.600 tiendas a tu servicio con
-                                    productos frescos y la mejor atención.
+                                    Te ayudamos a encontrar tu plan de nutrición perfecto, adaptado a tu estilo de vida y bolsillo.
                                 </p>
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-4">
-                                <Button
-                                    size="lg"
-                                    className="bg-mercadona-green hover:bg-mercadona-green/90 text-lg px-8"
-                                >
-                                    <ShoppingCart className="mr-2 h-5 w-5" />
-                                    Comprar online
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="lg"
-                                    className="text-lg px-8"
-                                >
-                                    <MapPin className="mr-2 h-5 w-5" />
-                                    Encontrar tienda
-                                </Button>
+                                <Link href="/planes">
+                                    <Button
+                                        size="lg"
+                                        className="bg-mercadona-green hover:bg-mercadona-green/90 text-lg px-8"
+                                    >
+                                        <ShoppingCart className="mr-2 h-5 w-5" />
+                                        Crear mi menú
+                                    </Button>
+                                </Link>
+                                <a href="https://www.google.com/maps/search/Mercadona+Espa%C3%B1a" target="_blank" rel="noopener noreferrer">
+
+                                    <Button
+                                        variant="outline"
+                                        size="lg"
+                                        className="text-lg px-8"
+                                    >
+                                        <MapPin className="mr-2 h-5 w-5" />
+                                        Encontrar tienda
+                                    </Button>
+                                </a>
+
                             </div>
 
                             <div className="flex items-center gap-8 pt-4">
