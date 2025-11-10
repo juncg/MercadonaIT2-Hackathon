@@ -19,8 +19,8 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
     title: {
-        default: "Mercadona",
-        template: "%s | Mercadona",
+        default: "Mercadinar",
+        template: "%s | Mercadinar",
     },
 };
 
