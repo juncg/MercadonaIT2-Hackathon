@@ -140,21 +140,25 @@ export default function Home() {
                                 name: "Plan Mediterráneo",
                                 price: "desde 8,99€",
                                 category: "Mediterráneo",
+                                image: "/plan-mediterraneo.jpg",
                             },
                             {
                                 name: "Plan Vegetariano",
                                 price: "desde 10,20€",
                                 category: "Verduras",
+                                image: "/plan-vegetariano.jpeg",
                             },
                             {
                                 name: "Plan Kids",
                                 price: "desde 6,99€",
                                 category: "Kids",
+                                image: "/plan-kids.jpg"
                             },
                             {
                                 name: "Plan Casero",
                                 price: "desde 12,50€",
                                 category: "Comida Casera",
+                                image: "/plan-casero.jpg"
                             },
                         ].map((product, index) => (
                             <Card
@@ -162,8 +166,13 @@ export default function Home() {
                                 className="group hover:shadow-lg transition-all duration-300 cursor-pointer"
                             >
                                 <CardContent className="p-0">
-                                    <div className="bg-gray-100 h-48 flex items-center justify-center rounded-t-lg">
-                                        <Package className="h-16 w-16 text-gray-400" />
+                                    <div className="h-48 relative rounded-t-lg overflow-hidden bg-gray-100">
+                                        <Image
+                                            src={product.image}
+                                            alt={product.name}
+                                            fill
+                                            className="object-cover"
+                                        />
                                     </div>
                                     <div className="p-6 space-y-3">
                                         <Badge
