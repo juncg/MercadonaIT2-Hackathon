@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import Image from 'next/image'
- 
+
 type Block = {
     id: string
     label: string
@@ -9,10 +9,10 @@ type Block = {
     color?: string
     imageUrl?: string
 }
- 
+
 const MEALS: string[] = ['Desayuno', 'Comida', 'Cena']
 const DAYS: string[] = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
- 
+
 export default function CalendarioPage(): JSX.Element {
     const BLOCKS: Block[] = [
         { id: 'd1', label: 'Avena y Fruta', meals: ['Desayuno'], color: 'bg-yellow-200', imageUrl: '/desayuno-avena.jpg' },
@@ -45,9 +45,9 @@ export default function CalendarioPage(): JSX.Element {
         e.dataTransfer.setData('application/json', JSON.stringify(payload))
         e.dataTransfer.effectAllowed = 'move'
     }
- 
+
     const allowDrop = (e: React.DragEvent) => e.preventDefault()
- 
+
     const onDropToCell = (e: React.DragEvent, row: number, col: number) => {
         e.preventDefault()
         const raw = e.dataTransfer.getData('application/json')
@@ -77,7 +77,7 @@ export default function CalendarioPage(): JSX.Element {
             return next
         })
     }
- 
+
     const onDropToPool = (e: React.DragEvent) => {
         e.preventDefault()
         const raw = e.dataTransfer.getData('application/json')
@@ -102,7 +102,7 @@ export default function CalendarioPage(): JSX.Element {
             })
         }
     }
- 
+
     return (
         <main className="p-6">
             <h1 className="text-2xl font-semibold mb-4">Calendario</h1>
@@ -118,13 +118,13 @@ export default function CalendarioPage(): JSX.Element {
                                 </div>
                             ))}
                         </div>
- 
+
                         {MEALS.map((meal, row) => (
                             <div key={meal} className="grid grid-cols-8">
                                 <div className="p-3 border-r border-b flex items-center font-medium bg-white">
                                     {meal}
                                 </div>
- 
+
                                 {DAYS.map((_, col) => {
                                     const key = `${row}-${col}`
                                     const assigned = assignments[key] ?? []
