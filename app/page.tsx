@@ -65,12 +65,19 @@ export default async function Home() {
                                         {[1, 2, 3, 4].map((i) => (
                                             <div
                                                 key={i}
-                                                className="w-8 h-8 rounded-full bg-gray-300 border-2 border-white"
-                                            ></div>
+                                                className="relative w-8 h-8 rounded-full border-2 border-white overflow-hidden"
+                                            >
+                                                <Image
+                                                    src="/plan-kids.jpg"
+                                                    alt="User Avatar"
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            </div>
                                         ))}
                                     </div>
                                     <span className="text-sm text-gray-600">
-                                        +5 M clientes confían en nosotros
+                                        +5M clientes confían en nosotros
                                     </span>
                                 </div>
                             </div>
