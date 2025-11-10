@@ -191,10 +191,12 @@ export default function Home() {
                                         <p className="text-mercadona-green font-bold text-xl">
                                             {product.price}
                                         </p>
-                                        <Button className="w-full bg-mercadona-green hover:bg-mercadona-green/90">
-                                            <ShoppingCart className="mr-2 h-4 w-4" />
-                                            Añadir al carro
-                                        </Button>
+                                        <Link href="/planes">
+                                            <Button className="w-full bg-mercadona-green hover:bg-mercadona-green/90">
+                                                <ShoppingCart className="mr-2 h-4 w-4" />
+                                                Añadir al carro
+                                            </Button>
+                                        </Link>
                                     </div>
                                 </CardContent>
                             </Card>

@@ -54,7 +54,7 @@ export default function Planes() {
             imageUrl: "/plan-casero.jpg",
             expandedContent:
                 "Comidas caseras como las de la abuela, exactamente como las recuerdas.",
-            actionHref: `/calendario?planData=${encodeURIComponent(JSON.stringify(buildPlan("Plan Casero", { comida: ["Arroz Integral"], cena: ["Sopa Ligera"] })) )}`,
+            actionHref: `/calendario?planData=${encodeURIComponent(JSON.stringify(buildPlan("Plan Casero", { comida: ["Arroz Integral"], cena: ["Sopa Ligera"] })))}`,
         },
         {
             id: "4",
@@ -62,7 +62,7 @@ export default function Planes() {
             imageUrl: "/plan-kids.jpg",
             expandedContent:
                 "Platos aptos para niños que encantan a toda la familia. Opciones nutritivas y deliciosas para todos.",
-            actionHref: `/calendario?planData=${encodeURIComponent(JSON.stringify(buildPlan("Plan Kids", { desayuno: ["Yogur con Muesli"], comida: ["Pasta con Verduras"] })) )}`,
+            actionHref: `/calendario?planData=${encodeURIComponent(JSON.stringify(buildPlan("Plan Kids", { desayuno: ["Yogur con Muesli"], comida: ["Pasta con Verduras"] })))}`,
         },
         {
             id: "5",
@@ -70,7 +70,7 @@ export default function Planes() {
             imageUrl: "/plan-gourmet.jpg",
             expandedContent:
                 "Experiencias culinarias elevadas con ingredientes premium y sabores sofisticados.",
-            actionHref: `/calendario?planData=${encodeURIComponent(JSON.stringify(buildPlan("Plan Gourmet", { comida: ["Pescado al Horno"], cena: ["Pescado al Horno"] })) )}`,
+            actionHref: `/calendario?planData=${encodeURIComponent(JSON.stringify(buildPlan("Plan Gourmet", { comida: ["Pescado al Horno"], cena: ["Pescado al Horno"] })))}`,
         },
         {
             id: "6",
@@ -78,7 +78,7 @@ export default function Planes() {
             imageUrl: "/plan-de-temporada.jpeg",
             expandedContent:
                 "Ingredientes de temporada que celebran lo mejor de cada época del año.",
-            actionHref: `/calendario?planData=${encodeURIComponent(JSON.stringify(buildPlan("Plan de Temporada", { comida: ["Ensalada Mediterránea"] })) )}`,
+            actionHref: `/calendario?planData=${encodeURIComponent(JSON.stringify(buildPlan("Plan de Temporada", { comida: ["Ensalada Mediterránea"] })))}`,
         },
     ];
 
