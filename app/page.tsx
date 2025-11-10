@@ -126,10 +126,10 @@ export default function Home() {
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center space-y-4 mb-16">
                         <h2 className="text-4xl font-bold font-heading text-gray-900">
-                            Productos destacados
+                            Menús destacados
                         </h2>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Descubre nuestros productos más populares con la
+                            Descubre nuestros menús más populares con la
                             mejor calidad garantizada
                         </p>
                     </div>
@@ -137,24 +137,24 @@ export default function Home() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {[
                             {
-                                name: "Frutas frescas",
-                                price: "desde 0,99€",
-                                category: "Frutas",
+                                name: "Plan Mediterráneo",
+                                price: "desde 8,99€",
+                                category: "Mediterráneo",
                             },
                             {
-                                name: "Verduras de temporada",
-                                price: "desde 1,20€",
+                                name: "Plan Vegetariano",
+                                price: "desde 10,20€",
                                 category: "Verduras",
                             },
                             {
-                                name: "Carne premium",
-                                price: "desde 8,99€",
-                                category: "Carnicería",
+                                name: "Plan Kids",
+                                price: "desde 6,99€",
+                                category: "Kids",
                             },
                             {
-                                name: "Pescado fresco",
+                                name: "Plan Casero",
                                 price: "desde 12,50€",
-                                category: "Pescadería",
+                                category: "Comida Casera",
                             },
                         ].map((product, index) => (
                             <Card
