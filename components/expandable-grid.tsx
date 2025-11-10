@@ -74,7 +74,7 @@ function ExpandableButton({ item, isExpanded, onToggle, isExpandedView = false }
                                 type="button" // PLACEHOLDER
                                 className="absolute right-7 bottom-7 inline-flex items-center px-4 py-2 bg-mercadona-green text-white rounded hover:bg-mercadona-green/90 transition-colors pt-2 pb-2"
                             >
-                                Botón
+                                Añadir a tu plan
 
                             </button>
                         </Link>
