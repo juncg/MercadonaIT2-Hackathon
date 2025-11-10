@@ -61,17 +61,17 @@ function loadPlansFromLocalStorage(): Record<string, DayPlan> {
 
 export default function CalendarioPage(): JSX.Element {
     const BLOCKS: Block[] = [
-        { id: 'd1', label: 'Avena y Fruta', meals: ['Desayuno'], color: 'bg-yellow-200', imageUrl: '/desayuno-avena.jpg' },
-        { id: 'd2', label: 'Tostada Integral', meals: ['Desayuno'], color: 'bg-green-200', imageUrl: '/desayuno-tostada.jpg' },
-        { id: 'd3', label: 'Yogur con Muesli', meals: ['Desayuno'], color: 'bg-slate-200', imageUrl: '/desayuno-yogur.jpg' },
+        { id: 'd1', label: 'Avena y Fruta', meals: ['Desayuno'], color: 'bg-yellow-200', imageUrl: '/avena-y-fruta.jpg' },
+        { id: 'd2', label: 'Tostada Integral', meals: ['Desayuno'], color: 'bg-green-200', imageUrl: '/tostada-integral.jpg' },
+        { id: 'd3', label: 'Yogur con Muesli', meals: ['Desayuno'], color: 'bg-slate-200', imageUrl: '/yogur-con-muesli.jpg' },
  
-        { id: 'c1', label: 'Ensalada Mediterránea', meals: ['Comida'], color: 'bg-yellow-200', imageUrl: '/comida-ensalada.jpg' },
-        { id: 'c2', label: 'Pasta con Verduras', meals: ['Comida', 'Cena'], color: 'bg-green-200', imageUrl: '/comida-pasta.jpg' },
-        { id: 'c3', label: 'Arroz Integral', meals: ['Comida'], color: 'bg-yellow-200', imageUrl: '/comida-arroz.jpg' },
+        { id: 'c1', label: 'Ensalada Mediterránea', meals: ['Comida'], color: 'bg-yellow-200', imageUrl: '/ensalada-mediterranea.jpg' },
+        { id: 'c2', label: 'Pasta con Verduras', meals: ['Comida', 'Cena'], color: 'bg-green-200', imageUrl: '/pasta-con-verduras.jpg' },
+        { id: 'c3', label: 'Arroz Integral', meals: ['Comida'], color: 'bg-yellow-200', imageUrl: '/arroz-integral.jpg' },
  
-        { id: 'n1', label: 'Sopa Ligera', meals: ['Cena'], color: 'bg-green-200', imageUrl: '/cena-sopa.jpg' },
-        { id: 'n2', label: 'Pescado al Horno', meals: ['Cena', 'Comida'], color: 'bg-yellow-200', imageUrl: '/cena-pescado.jpg' },
-        { id: 'n3', label: 'Verduras Salteadas', meals: ['Cena'], color: 'bg-green-200', imageUrl: '/cena-verduras.jpg' },
+        { id: 'n1', label: 'Sopa Ligera', meals: ['Cena'], color: 'bg-green-200', imageUrl: '/sopa-ligera.jpg' },
+        { id: 'n2', label: 'Pescado al Horno', meals: ['Cena', 'Comida'], color: 'bg-yellow-200', imageUrl: '/pescado-al-horno.jpg' },
+        { id: 'n3', label: 'Verduras Salteadas', meals: ['Cena'], color: 'bg-green-200', imageUrl: '/verduras-salteadas.jpg' },
     ]
   
     const [selectedMealIdx, setSelectedMealIdx] = useState<number>(0)
