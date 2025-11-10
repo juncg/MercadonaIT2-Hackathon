@@ -11,7 +11,6 @@ import { ThemeToggle } from "./ui/theme-toggle";
 const links = [
     { href: "/", label: "Inicio" },
     { href: "/planes", label: "Planes" },
-    { href: "/test-ollama", label: "Test Ollama" },
     { href: "/sobre-nosotros", label: "Sobre nosotros" },
 ];
 
