@@ -198,13 +198,13 @@ export default function Home() {
                     </div>
 
                     <div className="text-center mt-12">
-                        <Link href="/products">
+                        <Link href="/planes">
                             <Button
                                 variant="outline"
                                 size="lg"
                                 className="px-8"
                             >
-                                Ver todos los productos
+                                Ver todos los planes alimenticios
                             </Button>
                         </Link>
                     </div>
