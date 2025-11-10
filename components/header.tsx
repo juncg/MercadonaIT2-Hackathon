@@ -10,9 +10,9 @@ import { ThemeToggle } from "./ui/theme-toggle";
 
 const links = [
     { href: "/", label: "Inicio" },
-    { href: "/products", label: "Productos" },
+    { href: "/calendario", label: "Calendario" },
     { href: "/supermarkets", label: "Supermercados" },
-    { href: "/mercadona-sobre-ruedas", label: "Mercadona sobre ruedas" },
+    { href: "/planes", label: "Planes" },
     { href: "/personalizar-menu", label: "Personaliza tu plan alimenticio" },
     { href: "/test-ollama", label: "Test Ollama" },
 ];
@@ -111,18 +111,6 @@ export function Header() {
                                 </li>
                             );
                         })}
-                        <li className="pt-2 border-t border-border mt-2 flex items-center justify-between">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                aria-label="Ver carrito"
-                            >
-                                <Link href="/cart">
-                                    <ShoppingCart size={18} />
-                                </Link>
-                            </Button>
-                            <ThemeToggle />
-                        </li>
                     </ul>
                 </div>
             )}
