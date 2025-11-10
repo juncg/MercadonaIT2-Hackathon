@@ -98,7 +98,7 @@ export default function CalendarioPage(): JSX.Element {
                                     return (
                                         <div
                                             key={key}
-                                            className="p-2 border-r border-b h-28 flex items-center justify-center"
+                                            className="p-2 border-r border-b min-h-[10rem] flex items-start justify-center"
                                             onDragOver={allowDrop}
                                             onDrop={e => onDropToCell(e, row, col)}
                                             data-row={row}
@@ -111,7 +111,7 @@ export default function CalendarioPage(): JSX.Element {
                                                     className={`px-3 py-2 rounded shadow-sm cursor-move w-full ${assigned.color ?? 'bg-slate-200'}`}
                                                 >
                                                     <div className="text-sm font-medium">{assigned.label}</div>
-                                                    <div className="relative w-full h-16 mt-2 overflow-hidden rounded-md shadow-sm">
+                                                    <div className="relative w-full aspect-square mt-2 overflow-hidden rounded-md shadow-sm">
                                                         <Image
                                                             src={assigned.imageUrl ?? '/images/placeholder.png'}
                                                             alt={assigned.label}
