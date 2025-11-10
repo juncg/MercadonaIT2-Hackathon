@@ -193,7 +193,7 @@ export default function CalendarioPage(): JSX.Element {
                             </button>
                         ))}
                     </div>
-                    <div className="flex flex-col gap-2 max-h-[480px] overflow-auto">
+                    <div className="flex flex-col gap-2 max-h-[450px] overflow-auto">
                         {poolBlocks.map(b => (
                             <div
                                 key={b.id}
