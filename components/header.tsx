@@ -12,6 +12,7 @@ const links = [
     { href: "/", label: "Inicio" },
     { href: "/planes", label: "Planes" },
     { href: "/sobre-nosotros", label: "Sobre nosotros" },
+    { href: "https://www.google.com/maps/search/Mercadona+Espa%C3%B1a", label: "Encuéntranos", external: true }
 ];
 
 export function Header() {
@@ -96,14 +97,12 @@ export function Header() {
                                 <li key={l.href}>
                                     <Link
                                         href={l.href}
-                                        className={`block py-2 px-3 rounded-md text-primary ${active
-                                            ? "bg-muted font-semibold"
-                                            : "hover:bg-muted/70"
+                                        target={l.external ? "_blank" : undefined}
+                                        rel={l.external ? "noopener noreferrer" : undefined}
+                                        className={`text-primary transition-colors ${active
+                                            ? "font-semibold underline-offset-4 underline"
+                                            : "opacity-90 hover:opacity-100"
                                             }`}
-                                        onClick={() => setOpen(false)}
-                                        aria-current={
-                                            active ? "page" : undefined
-                                        }
                                     >
                                         {l.label}
                                     </Link>
