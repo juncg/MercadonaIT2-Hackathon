@@ -168,6 +168,16 @@ export default function CalendarioPage(): JSX.Element {
         savePlanToLocalStorage(plan)
         alert('Plan guardado')
     }
+
+    const addPlanToCart = () => {
+        const plan = createPlanFromAssignments(planName || 'plan1', assignments)
+        const raw = localStorage.getItem('cart')
+        const existing: Record<string, DayPlan> = raw ? JSON.parse(raw) : {}
+        const [name] = Object.keys(plan)
+        existing[name] = plan[name]
+        localStorage.setItem('cart', JSON.stringify(existing))
+        alert('Plan añadido al carrito')
+    }
  
     const onDragStart = (e: React.DragEvent, payload: { id: string; source: 'pool' | 'cell'; key?: string; index?: number }) => {
         e.dataTransfer.setData('application/json', JSON.stringify(payload))
@@ -249,6 +259,13 @@ export default function CalendarioPage(): JSX.Element {
                         className="px-3 py-1 rounded bg-slate-800 text-white text-sm"
                     >
                         Guardar plan
+                    </button>
+                    <button
+                        type="button"
+                        onClick={addPlanToCart}
+                        className="px-3 py-1 rounded bg-green-700 text-white text-sm"
+                    >
+                        Añadir al carrito
                     </button>
                 </div>
             </div>
