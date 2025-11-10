@@ -316,29 +316,42 @@ export default function Home() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {[
                             {
-                                name: "María González",
+                                name: "Josep Gaya Barrachina",
                                 location: "Madrid",
                                 rating: 5,
                                 comment:
                                     "La calidad de los productos es excelente y el servicio de entrega muy rápido. ¡Recomendado!",
+                                image: "/persona1.jpg"
                             },
                             {
-                                name: "Carlos Ruiz",
+                                name: "Josepe Gaye Barrechine",
                                 location: "Barcelona",
                                 rating: 5,
                                 comment:
                                     "Llevo años comprando en Mercadona. Los precios son justos y la atención al cliente excepcional.",
+                                image: "/persona2.jpg"
                             },
                             {
-                                name: "Ana Martín",
+                                name: "Jose Juan Barrachin Gaya",
                                 location: "Valencia",
                                 rating: 5,
                                 comment:
                                     "Me encanta poder hacer la compra online y recibirla en casa. ¡Muy conveniente!",
+                                images: "/persona3.jpg"
                             },
                         ].map((testimonial, index) => (
                             <Card key={index} className="p-6">
                                 <CardContent className="space-y-4">
+                                    <div className="flex justify-center">
+                                        <div className="relative w-16 h-16 rounded-full overflow-hidden">
+                                            <Image
+                                                src={imagesUrl[index + 1]}
+                                                alt={testimonial.name}
+                                                fill
+                                                className="object-cover"
+                                            ></Image>
+                                        </div>
+                                    </div>
                                     <div className="flex justify-center space-x-1">
                                         {[...Array(testimonial.rating)].map(
                                             (_, i) => (
