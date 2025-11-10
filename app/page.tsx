@@ -103,7 +103,7 @@ export default function Home() {
                                 <div className="flex items-center gap-2">
                                     <Clock className="h-4 w-4 text-mercadona-green" />
                                     <span className="text-sm font-medium">
-                                        Entrega en 1h
+                                        Entregas semanales
                                     </span>
                                 </div>
                             </div>
