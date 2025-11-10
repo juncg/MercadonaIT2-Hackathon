@@ -64,8 +64,8 @@ function ExpandableButton({ item, isExpanded, onToggle, isExpandedView = false }
         )}
       </div>
       
-      <div className={`
-        relative bg-black 
+      <div className={` 
+        relative overflow-hidden rounded-lg shadow-lg
         ${isExpandedView
           ? 'w-20 h-20 flex-shrink-0 order-1'
           : 'w-24 h-24 mb-3 order-2'
