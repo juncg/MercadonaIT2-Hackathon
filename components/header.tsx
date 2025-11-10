@@ -10,7 +10,7 @@ import { ThemeToggle } from "./ui/theme-toggle";
 
 const links = [
     { href: "/", label: "Inicio" },
-    { href: "/products", label: "Productos" },
+    { href: "/calendario", label: "Calendario" },
     { href: "/supermarkets", label: "Supermercados" },
     { href: "/planes", label: "Planes" },
     { href: "/personalizar-menu", label: "Personaliza tu plan alimenticio" },
