@@ -12,10 +12,11 @@ import {
     Store,
     Truck,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 
-export default async function Home() {
+export default function Home() {
+    const imagesUrl = ["", "/personarizz.jpg", "/persona2.jpg", "/persona3.jpg", "/persona4.jpg"];
     return (
         <div className="min-h-screen">
             {/* Hero Section */}
@@ -68,7 +69,7 @@ export default async function Home() {
                                                 className="relative w-8 h-8 rounded-full border-2 border-white overflow-hidden"
                                             >
                                                 <Image
-                                                    src="/plan-kids.jpg"
+                                                    src={imagesUrl[i]}
                                                     alt="User Avatar"
                                                     fill
                                                     className="object-cover"
@@ -91,8 +92,8 @@ export default async function Home() {
                                             src="/comida-sana-menu.jpg"
                                             alt="Not loading"
                                             fill
-                                            className="object-contain"
-                                        ></Image>
+                                            className="object-contain">
+                                        </Image>
                                     </div>
                                 </div>
                             </div>
