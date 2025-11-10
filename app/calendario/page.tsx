@@ -144,7 +144,7 @@ export default function CalendarioPage(): JSX.Element {
                     onDragOver={allowDrop}
                     onDrop={onDropToPool}
                 >
-                    <div className="text-center font-medium mb-3">Bloques disponibles</div>
+                    <div className="text-center font-medium mb-3">Planes disponibles</div>
                     <div className="flex flex-col gap-2 max-h-[480px] overflow-auto">
                         {blocks.map(b => (
                             <div
