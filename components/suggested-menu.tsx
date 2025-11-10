@@ -4,9 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MenuCategory, MercadonaProduct } from "@/lib/menu-types";
-import { MERCADONA_PRODUCTS } from "@/lib/mercadona-products";
+import { getMercadonaProducts } from "@/lib/mercadona-products";
 import { Edit2, Minus, Plus, ShoppingCart, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface SuggestedMenuItem {
     id: string;
@@ -41,6 +41,15 @@ export function SuggestedMenu({
     const [showAlternatives, setShowAlternatives] = useState<string | null>(
         null
     );
+    const [allProducts, setAllProducts] = useState<MercadonaProduct[]>([]);
+
+    useEffect(() => {
+        const loadProducts = async () => {
+            const products = await getMercadonaProducts();
+            setAllProducts(products);
+        };
+        loadProducts();
+    }, []);
 
     const getCategoryEmoji = (category: MenuCategory): string => {
         const emojiMap: Record<MenuCategory, string> = {
@@ -91,21 +100,24 @@ export function SuggestedMenu({
         category: MenuCategory,
         currentProductId: string
     ) => {
-        return MERCADONA_PRODUCTS.filter(
-            (product) =>
-                product.category === category && product.id !== currentProductId
-        ).slice(0, 5); // Mostrar máximo 5 alternativas
+        return allProducts
+            .filter(
+                (product) =>
+                    product.category === category &&
+                    product.id !== currentProductId
+            )
+            .slice(0, 5);
     };
 
     const replaceItem = (itemId: string, newProduct: MercadonaProduct) => {
         const updatedItems = menu.items.map((item) =>
             item.id === itemId
                 ? {
-                    ...item,
-                    product: newProduct,
-                    isOriginalSuggestion: false,
-                    reason: `Cambiado por el usuario`,
-                }
+                      ...item,
+                      product: newProduct,
+                      isOriginalSuggestion: false,
+                      reason: `Cambiado por el usuario`,
+                  }
                 : item
         );
 

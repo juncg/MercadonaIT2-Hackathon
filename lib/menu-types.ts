@@ -14,12 +14,8 @@ export interface MercadonaProduct {
     category: MenuCategory;
     image?: string;
     description?: string;
-    nutritionalInfo?: {
-        calories: number;
-        protein: number;
-        carbohydrates: number;
-        fat: number;
-    };
+    allergens?: string;
+    nutritionalInfo?: string;
 }
 
 export interface MenuItem {

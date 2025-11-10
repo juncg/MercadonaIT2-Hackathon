@@ -1,8 +1,8 @@
 "use client";
 
 import { MenuItem, MercadonaProduct } from "@/lib/menu-types";
-import { getProductById } from "@/lib/mercadona-products";
-import { useCallback, useMemo, useState } from "react";
+import { getMercadonaProducts } from "@/lib/mercadona-products";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export interface UseMenuReturn {
     menu: Record<string, number>;
@@ -18,6 +18,21 @@ export interface UseMenuReturn {
 
 export function useMenu(): UseMenuReturn {
     const [menu, setMenu] = useState<Record<string, number>>({});
+    const [productsCache, setProductsCache] = useState<
+        Record<string, MercadonaProduct>
+    >({});
+
+    useEffect(() => {
+        const loadProducts = async () => {
+            const products = await getMercadonaProducts();
+            const cache = products.reduce((acc, product) => {
+                acc[product.id] = product;
+                return acc;
+            }, {} as Record<string, MercadonaProduct>);
+            setProductsCache(cache);
+        };
+        loadProducts();
+    }, []);
 
     const addProduct = useCallback(
         (product: MercadonaProduct, quantity: number = 1) => {
@@ -66,7 +81,7 @@ export function useMenu(): UseMenuReturn {
         return Object.entries(menu)
             .filter(([, quantity]) => quantity > 0)
             .map(([productId, quantity]) => {
-                const product = getProductById(productId);
+                const product = productsCache[productId];
                 if (!product) return null;
 
                 return {
@@ -76,7 +91,7 @@ export function useMenu(): UseMenuReturn {
                 } as MenuItem;
             })
             .filter(Boolean) as MenuItem[];
-    }, [menu]);
+    }, [menu, productsCache]);
 
     const totalItems = useMemo(() => {
         return Object.values(menu).reduce((sum, quantity) => sum + quantity, 0);

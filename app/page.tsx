@@ -12,10 +12,10 @@ import {
     Store,
     Truck,
 } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
     return (
         <div className="min-h-screen">
             {/* Hero Section */}
@@ -65,12 +65,19 @@ export default function Home() {
                                         {[1, 2, 3, 4].map((i) => (
                                             <div
                                                 key={i}
-                                                className="w-8 h-8 rounded-full bg-gray-300 border-2 border-white"
-                                            ></div>
+                                                className="relative w-8 h-8 rounded-full border-2 border-white overflow-hidden"
+                                            >
+                                                <Image
+                                                    src="/plan-kids.jpg"
+                                                    alt="User Avatar"
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            </div>
                                         ))}
                                     </div>
                                     <span className="text-sm text-gray-600">
-                                        +5 M clientes confían en nosotros
+                                        +5M clientes confían en nosotros
                                     </span>
                                 </div>
                             </div>
@@ -84,8 +91,8 @@ export default function Home() {
                                             src="/comida-sana-menu.jpg"
                                             alt="Not loading"
                                             fill
-                                            className="object-contain">
-                                        </Image>
+                                            className="object-contain"
+                                        ></Image>
                                     </div>
                                 </div>
                             </div>
