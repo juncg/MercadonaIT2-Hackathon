@@ -142,25 +142,21 @@ export default function Home() {
                         {[
                             {
                                 name: "Plan Mediterráneo",
-                                price: "desde 8,99€",
                                 category: "Mediterráneo",
                                 image: "/plan-mediterraneo.jpg",
                             },
                             {
                                 name: "Plan Vegetariano",
-                                price: "desde 10,20€",
                                 category: "Verduras",
                                 image: "/plan-vegetariano.jpeg",
                             },
                             {
                                 name: "Plan Kids",
-                                price: "desde 6,99€",
                                 category: "Kids",
                                 image: "/plan-kids.jpg"
                             },
                             {
                                 name: "Plan Casero",
-                                price: "desde 12,50€",
                                 category: "Comida Casera",
                                 image: "/plan-casero.jpg"
                             },
@@ -188,9 +184,6 @@ export default function Home() {
                                         <h3 className="font-semibold text-lg">
                                             {product.name}
                                         </h3>
-                                        <p className="text-mercadona-green font-bold text-xl">
-                                            {product.price}
-                                        </p>
                                         <Link href="/planes">
                                             <Button className="w-full bg-mercadona-green hover:bg-mercadona-green/90">
                                                 <ShoppingCart className="mr-2 h-4 w-4" />
