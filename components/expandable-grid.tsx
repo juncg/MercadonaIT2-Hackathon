@@ -10,6 +10,7 @@ interface GridItem {
     title: string
     imageUrl: string
     expandedContent?: string
+    actionHref?: string
 }
 
 interface ExpandableGridProps {
@@ -31,76 +32,59 @@ function ExpandableButton({ item, isExpanded, onToggle, isExpandedView = false }
             variant="outline"
             className={`
         w-full h-full p-4 
-        flex items-center justify-center
         transition-all duration-300 ease-in-out
         hover:shadow-lg
-        ${isExpandedView
-                    ? 'flex-row justify-start gap-6 text-left h-32'
-                    : 'flex-col aspect-square h-48'
-                }
         ${isExpanded ? 'border-[var(--mercadona-green)]' : ''}
+        ${isExpandedView ? 'p-6' : 'p-4'}
       `}
         >
-            <div className={`
-        ${isExpandedView
-                    ? 'flex-1 text-left order-2 relative pb-12'
-                    : 'text-center order-1'
-                }
-      `}>
+            {isExpandedView ? (
+                <div className="w-full grid grid-cols-[96px_1fr_160px] gap-6 items-center">
+                    <div className="w-24 h-24 relative rounded-lg overflow-hidden shadow-lg flex-shrink-0">
+                        <Image
+                            src={item.imageUrl}
+                            alt={item.title}
+                            fill
+                            className="object-cover"
+                        />
+                    </div>
 
-                <div>
-                    <h3 className={`
-          font-semibold 
-          ${isExpandedView
-                            ? 'text-xl mb-2 pt-4'
-                            : 'text-lg'
-                        }
-          ${isExpanded ? 'text-[var(--mercadona-green)]' : ''}
-        `}>
+                    <div className="text-left">
+                        <h3 className={`font-semibold text-xl ${isExpanded ? 'text-[var(--mercadona-green)]' : ''}`}>
+                            {item.title}
+                        </h3>
+                        {item.expandedContent && (
+                            <p className="text-sm text-muted-foreground mt-2 text-balance">
+                                {item.expandedContent}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="flex items-center justify-end">
+                        <Link
+                            href={item.actionHref ?? '/calendario'}
+                            className="inline-flex items-center h-10 px-4 bg-mercadona-green text-white rounded hover:bg-mercadona-green/90 transition-colors"
+                        >
+                            Mostrar Plan
+                        </Link>
+                    </div>
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center gap-2 py-2">
+                    <h3 className={`font-semibold text-lg ${isExpanded ? 'text-[var(--mercadona-green)]' : ''}`}>
                         {item.title}
                     </h3>
+                    <div className="w-24 h-24 relative overflow-hidden rounded-lg shadow-lg">
+                        <Image
+                            src={item.imageUrl}
+                            alt={item.title}
+                            fill
+                            className="object-cover"
+                        />
+                    </div>
                 </div>
-                <div className='max-w-[80ch]'>
-                    {isExpandedView && item.expandedContent && (
-                        <p className="text-sm text-muted-foreground text-balance">
-                            {item.expandedContent}
-                        </p>
-                    )}
-                </div>
-                <div>
-                    {isExpandedView && (
-                        <Link href="/calendario">
-                            <button
-                                type="button" // PLACEHOLDER
-                                className="absolute right-7 bottom-7 inline-flex items-center px-4 py-2 bg-mercadona-green text-white rounded hover:bg-mercadona-green/90 transition-colors pt-2 pb-2"
-                            >
-                                Añadir a tu plan
-
-                            </button>
-                        </Link>
-                    )}
-                </div>
-
-            </div>
-
-            <div className={` 
-        relative overflow-hidden rounded-lg shadow-lg
-        ${isExpandedView
-                    ? 'w-20 h-20 flex-shrink-0 order-1'
-                    : 'w-24 h-24 mb-3 order-2'
-                }
-        transition-[width,height] duration-300 ease-in-out
-      `}>
-                <Image
-                    src={item.imageUrl}
-                    alt={item.title}
-                    fill
-                    className="object-cover rounded transition-none"
-                />
-
-            </div>
-
-        </Button >
+            )}
+        </Button>
     )
 }
 

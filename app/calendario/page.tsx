@@ -1,10 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { MenuSuggestion, useMenuSuggestions } from "@/lib/use-menu-suggestions";
-import Image from "next/image";
-import React, { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import React, { JSX, useEffect, useState } from "react";
 
 type Block = {
     id: string;
@@ -27,65 +23,58 @@ const DAYS: string[] = [
     "Domingo",
 ];
 
-const SafeImage = ({
-    src,
-    alt,
-    fill,
-    className,
-}: {
-    src?: string;
-    alt: string;
-    fill?: boolean;
-    className?: string;
-}) => {
-    const [imgSrc, setImgSrc] = useState(src || "/images/placeholder.png");
-    const [hasError, setHasError] = useState(false);
+type MealPlan = Record<string, string[]>;
+type DayPlan = Record<string, MealPlan>;
+type Plan = Record<string, DayPlan>;
 
-    const isValidUrl = (url: string) => {
-        try {
-            new URL(url);
-            return true;
-        } catch {
-            return url.startsWith("/");
+function createEmptyPlan(planName: string): Plan {
+    const plan: Plan = {};
+    plan[planName] = {};
+    for (const day of DAYS) {
+        plan[planName][day] = {};
+        for (const meal of MEALS) {
+            plan[planName][day][meal] = [];
         }
-    };
-
-    React.useEffect(() => {
-        if (src && isValidUrl(src)) {
-            setImgSrc(src);
-            setHasError(false);
-        } else {
-            setImgSrc("/images/placeholder.png");
-            setHasError(true);
-        }
-    }, [src]);
-
-    if (hasError || !isValidUrl(imgSrc)) {
-        return (
-            <div
-                className={`flex items-center justify-center bg-gray-200 ${className}`}
-            >
-                <span className="text-gray-400 text-xs">Sin imagen</span>
-            </div>
-        );
     }
+    return plan;
+}
 
-    return (
-        <Image
-            src={imgSrc}
-            alt={alt}
-            fill={fill}
-            className={className}
-            onError={() => {
-                setImgSrc("/images/placeholder.png");
-                setHasError(true);
-            }}
-        />
-    );
-};
+function createPlanFromAssignments(
+    planName: string,
+    assignments: Record<string, Block[]>
+): Plan {
+    const plan = createEmptyPlan(planName);
+    for (const key of Object.keys(assignments)) {
+        const [rowStr, colStr] = key.split("-");
+        const row = Number(rowStr);
+        if (Number.isNaN(row)) continue;
+        const meal = MEALS[row];
+        const col = Number(colStr);
+        const day = DAYS[col];
+        if (!meal || !day) continue;
+        const items = assignments[key].map((b) => b.label);
+        plan[planName][day][meal] = [...plan[planName][day][meal], ...items];
+    }
+    return plan;
+}
 
-export default function CalendarioPage() {
-    const [blocks, setBlocks] = useState<Block[]>([
+function savePlanToLocalStorage(plan: Plan) {
+    const existingRaw = localStorage.getItem("meal-plans");
+    const existing: Record<string, DayPlan> = existingRaw
+        ? JSON.parse(existingRaw)
+        : {};
+    const [name] = Object.keys(plan);
+    existing[name] = plan[name];
+    localStorage.setItem("meal-plans", JSON.stringify(existing));
+}
+
+function loadPlansFromLocalStorage(): Record<string, DayPlan> {
+    const raw = localStorage.getItem("meal-plans");
+    return raw ? JSON.parse(raw) : {};
+}
+
+export default function CalendarioPage(): JSX.Element {
+    const BLOCKS: Block[] = [
         {
             id: "d1",
             label: "Avena y Fruta",
@@ -151,19 +140,10 @@ export default function CalendarioPage() {
             color: "bg-green-200",
             imageUrl: "/cena-verduras.jpg",
         },
-    ]);
+    ];
 
     const [selectedMealIdx, setSelectedMealIdx] = useState<number>(0);
-    const [showIAPanel, setShowIAPanel] = useState(false);
-    const [preferences, setPreferences] = useState("");
-    const [dietaryRestrictions, setDietaryRestrictions] = useState("");
-    const [budget, setBudget] = useState("");
-    const [selectedDays, setSelectedDays] = useState<string[]>([]);
-
-    const { loading, error, suggestions, getSuggestions } =
-        useMenuSuggestions();
-
-    const poolBlocks = blocks.filter((b) =>
+    const poolBlocks = BLOCKS.filter((b) =>
         b.meals.includes(MEALS[selectedMealIdx])
     );
 
@@ -179,78 +159,95 @@ export default function CalendarioPage() {
         }
     );
 
-    const handleRequestSuggestions = async () => {
-        if (!preferences.trim() || selectedDays.length === 0) {
-            alert(
-                "Por favor, completa tus preferencias y selecciona al menos un día"
-            );
-            return;
-        }
+    const [planName, setPlanName] = useState<string>("plan1");
+    const searchParams = useSearchParams();
 
-        try {
-            console.log("[Calendar] Requesting suggestions with:", {
-                preferences: preferences.substring(0, 50),
-                days: selectedDays,
-            });
-
-            const suggestions = await getSuggestions({
-                preferences,
-                dietaryRestrictions: dietaryRestrictions || undefined,
-                budget: budget ? parseFloat(budget) : undefined,
-                days: selectedDays,
-                model: "gemma3:1b",
-            });
-
-            console.log("[Calendar] Received suggestions:", suggestions.length);
-
-            const newBlocks: Block[] = suggestions.map(
-                (s: MenuSuggestion, idx: number) => ({
-                    id: `ai-${s.productId}-${idx}`,
-                    label: s.productName,
-                    meals: [s.mealType],
-                    color: "bg-blue-200",
-                    imageUrl: s.thumbnail,
-                    price: s.price,
-                    productId: s.productId,
-                })
-            );
-
-            setBlocks((prev) => [...prev, ...newBlocks]);
-
-            suggestions.forEach((s: MenuSuggestion) => {
-                const dayIndex = DAYS.indexOf(s.day);
-                const mealIndex = MEALS.indexOf(s.mealType);
-
-                if (dayIndex !== -1 && mealIndex !== -1) {
-                    const key = `${mealIndex}-${dayIndex}`;
-                    const newBlock = newBlocks.find(
-                        (b) =>
-                            b.productId === s.productId &&
-                            b.label === s.productName
-                    );
-
-                    if (newBlock) {
-                        setAssignments((prev) => ({
-                            ...prev,
-                            [key]: [...(prev[key] || []), newBlock],
-                        }));
+    useEffect(() => {
+        const planDataRaw = searchParams.get("planData");
+        if (planDataRaw) {
+            try {
+                const parsed = JSON.parse(planDataRaw);
+                const [name] = Object.keys(parsed);
+                const dayPlan = parsed[name] as Record<
+                    string,
+                    Record<string, string[]>
+                >;
+                const map: Record<string, Block[]> = {};
+                for (let r = 0; r < MEALS.length; r++) {
+                    for (let c = 0; c < DAYS.length; c++) {
+                        map[`${r}-${c}`] = [];
                     }
                 }
-            });
 
-            setShowIAPanel(false);
-        } catch (err) {
-            console.error("[Calendar] Error al obtener sugerencias:", err);
-            const errorMessage =
-                err instanceof Error ? err.message : "Error desconocido";
-            alert(`Error: ${errorMessage}`);
+                for (let c = 0; c < DAYS.length; c++) {
+                    const day = DAYS[c];
+                    const mealsForDay = dayPlan[day] ?? {};
+                    for (let r = 0; r < MEALS.length; r++) {
+                        const meal = MEALS[r];
+                        const products = mealsForDay[meal] ?? [];
+                        for (const label of products) {
+                            const block = BLOCKS.find((b) => b.label === label);
+                            if (block) {
+                                map[`${r}-${c}`].push(block);
+                            }
+                        }
+                    }
+                }
+
+                setAssignments(map);
+                setPlanName(name);
+                return;
+            } catch {
+                // ignore parse errors and fallthrough to existing load logic
+            }
         }
-    };
 
-    const toggleDaySelection = (day: string) => {
-        setSelectedDays((prev) =>
-            prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+        const planToLoad = searchParams.get("plan");
+        if (!planToLoad) return;
+        const raw = localStorage.getItem("meal-plans");
+        if (!raw) return;
+        try {
+            const parsed = JSON.parse(raw) as Record<
+                string,
+                Record<string, Record<string, string[]>>
+            >;
+            const dayPlan = parsed[planToLoad];
+            if (!dayPlan) return;
+            setPlanName(planToLoad);
+
+            const map: Record<string, Block[]> = {};
+            for (let r = 0; r < MEALS.length; r++) {
+                for (let c = 0; c < DAYS.length; c++) {
+                    map[`${r}-${c}`] = [];
+                }
+            }
+
+            for (let c = 0; c < DAYS.length; c++) {
+                const day = DAYS[c];
+                const mealsForDay = dayPlan[day] ?? {};
+                for (let r = 0; r < MEALS.length; r++) {
+                    const meal = MEALS[r];
+                    const products = mealsForDay[meal] ?? [];
+                    for (const label of products) {
+                        const block = BLOCKS.find((b) => b.label === label);
+                        if (block) map[`${r}-${c}`].push(block);
+                    }
+                }
+            }
+
+            setAssignments(map);
+        } catch {
+            // ignore parse errors
+        }
+    }, [searchParams]);
+
+    const handleSavePlan = () => {
+        const plan = createPlanFromAssignments(
+            planName || "plan1",
+            assignments
         );
+        savePlanToLocalStorage(plan);
+        alert("Plan guardado");
     };
 
     const onDragStart = (
@@ -343,114 +340,25 @@ export default function CalendarioPage() {
 
     return (
         <main className="p-6">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-semibold">Calendario</h1>
-                <Button
-                    onClick={() => setShowIAPanel(!showIAPanel)}
-                    variant={showIAPanel ? "secondary" : "default"}
-                >
-                    {showIAPanel ? "Cerrar IA" : "🤖 Sugerencias con IA"}
-                </Button>
-            </div>
-
-            {showIAPanel && (
-                <div className="bg-white border rounded-lg p-4 mb-4 shadow-sm">
-                    <h2 className="text-lg font-semibold mb-3">
-                        Generador de Menú con IA
-                    </h2>
-
-                    <div className="space-y-3">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">
-                                Preferencias alimentarias
-                            </label>
-                            <Textarea
-                                placeholder="Ejemplo: Me gusta la comida mediterránea, prefiero platos ligeros..."
-                                value={preferences}
-                                onChange={(e) => setPreferences(e.target.value)}
-                                rows={3}
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-1">
-                                Restricciones dietéticas (opcional)
-                            </label>
-                            <Input
-                                placeholder="Ejemplo: Sin gluten, vegetariano..."
-                                value={dietaryRestrictions}
-                                onChange={(e) =>
-                                    setDietaryRestrictions(e.target.value)
-                                }
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-1">
-                                Presupuesto aproximado (opcional)
-                            </label>
-                            <Input
-                                type="number"
-                                placeholder="50"
-                                value={budget}
-                                onChange={(e) => setBudget(e.target.value)}
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-2">
-                                Selecciona los días
-                            </label>
-                            <div className="flex flex-wrap gap-2">
-                                {DAYS.map((day) => (
-                                    <button
-                                        key={day}
-                                        onClick={() => toggleDaySelection(day)}
-                                        className={`px-3 py-1 rounded text-sm transition-colors ${
-                                            selectedDays.includes(day)
-                                                ? "bg-blue-600 text-white"
-                                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                        }`}
-                                    >
-                                        {day}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <Button
-                            onClick={handleRequestSuggestions}
-                            disabled={loading}
-                            className="w-full"
-                        >
-                            {loading
-                                ? "⏳ Generando sugerencias (puede tardar 1-2 minutos)..."
-                                : "Generar menú"}
-                        </Button>
-
-                        {loading && (
-                            <div className="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded text-sm">
-                                ⏳ Procesando con IA... Esto puede tardar 1-2
-                                minutos dependiendo de tu ordenador. Por favor
-                                espera.
-                            </div>
-                        )}
-
-                        {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded text-sm">
-                                Error: {error}
-                            </div>
-                        )}
-
-                        {suggestions.length > 0 && (
-                            <div className="bg-green-50 border border-green-200 text-green-700 p-3 rounded text-sm">
-                                ✓ {suggestions.length} productos añadidos al
-                                calendario
-                            </div>
-                        )}
-                    </div>
+                <div className="flex items-center gap-2">
+                    <input
+                        value={planName}
+                        onChange={(e) => setPlanName(e.target.value)}
+                        placeholder="Nombre del plan"
+                        className="px-2 py-1 border rounded text-sm"
+                        aria-label="Nombre del plan"
+                    />
+                    <button
+                        type="button"
+                        onClick={handleSavePlan}
+                        className="px-3 py-1 rounded bg-slate-800 text-white text-sm"
+                    >
+                        Guardar plan
+                    </button>
                 </div>
-            )}
+            </div>
 
             <div className="flex gap-6 items-start">
                 <div className="overflow-auto border rounded flex-1">
