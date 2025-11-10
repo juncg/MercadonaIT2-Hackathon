@@ -68,8 +68,8 @@ export function MenuChat({ onApplySuggestion }: MenuChatProps) {
     };
 
     // Función para intentar corregir el formato de la respuesta
-    const attemptFormatCorrection = (content: string): string => {
-        const allProducts = searchProducts("");
+    const attemptFormatCorrection = async (content: string): Promise<string> => {
+        const allProducts = await searchProducts("");
         const correctedLines: string[] = [];
 
         // Buscar productos mencionados y organizarlos por categoría
@@ -188,6 +188,9 @@ NO añadas explicaciones. NO uses otros formatos. COPIA los nombres exactos.`;
 
         try {
             // Añadir ejemplos de formato correcto al historial para entrenar el modelo
+            try {
+            const systemPrompt = await buildSystemPrompt();
+            
             const trainingExamples: OllamaChatMessage[] = [
                 {
                     role: "user",
@@ -212,7 +215,7 @@ NO añadas explicaciones. NO uses otros formatos. COPIA los nombres exactos.`;
             const chatMessages: OllamaChatMessage[] = [
                 {
                     role: "system",
-                    content: buildSystemPrompt(),
+                    content: systemPrompt,
                 },
                 ...trainingExamples,
                 ...messages.slice(-6).map((msg) => ({
@@ -305,9 +308,9 @@ NO añadas explicaciones. NO uses otros formatos. COPIA los nombres exactos.`;
         }
     };
 
-    const createEditableMenu = (content: string, messageId: string) => {
+    const createEditableMenu = async (content: string, messageId: string) => {
         const menuItems: SuggestedMenuItem[] = [];
-        const allProducts = searchProducts(""); // Obtener todos los productos
+        const allProducts = await searchProducts(""); // Obtener todos los productos
 
         // Función para encontrar producto exacto por nombre
         const findExactProduct = (
