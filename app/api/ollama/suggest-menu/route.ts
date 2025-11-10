@@ -74,34 +74,26 @@ export async function POST(request: NextRequest) {
             )
             .join("\n");
 
-        const systemPrompt = `Eres un asistente experto en nutrición que ayuda a crear menús semanales saludables.
-Tu tarea es sugerir productos de Mercadona para un calendario de comidas.
+        const systemPrompt = `Eres un asistente de nutrición. Responde SOLO con JSON válido.
 
-PRODUCTOS DISPONIBLES:
+PRODUCTOS DISPONIBLES (usa solo estos IDs):
 ${productsText}
 
-REGLAS CRÍTICAS:
-1. Responde ÚNICAMENTE con JSON válido, sin bloques de código markdown, sin texto antes o después
-2. El JSON debe tener exactamente este formato: {"suggestions":[...]}
-3. Cada sugerencia debe incluir: productId (string del listado), productName (string), price (number), mealType (string: "Desayuno" o "Comida" o "Cena"), day (string del día solicitado), reason (string breve)
-4. NO incluyas el campo "thumbnail"
-5. Asegúrate de que el JSON sea válido: sin comas finales, comillas correctas
-6. Respeta las preferencias dietéticas y restricciones del usuario
-7. Intenta mantenerte dentro del presupuesto si se especifica
-8. Distribuye los productos de forma equilibrada entre los días
+FORMATO DE RESPUESTA (copia exactamente esta estructura):
+{"suggestions":[{"productId":"ID_DEL_PRODUCTO","productName":"Nombre","price":5.99,"mealType":"Desayuno","day":"Lunes","reason":"Motivo"}]}
 
-EJEMPLO DE RESPUESTA VÁLIDA:
-{"suggestions":[{"productId":"1","productName":"Tortilla","price":4.5,"mealType":"Comida","day":"Lunes","reason":"Alta en proteínas"}]}`;
+REGLAS:
+1. Usa solo productId de la lista de productos
+2. mealType debe ser: "Desayuno", "Comida" o "Cena"
+3. day debe ser uno de los días solicitados
+4. price debe ser un número
+5. NO agregues texto explicativo, SOLO el JSON
+6. Sugiere 3 productos por día (1 por comida)`;
 
-        const userPrompt = `Crea un menú para los siguientes días: ${days.join(
-            ", "
-        )}
-
+        const userPrompt = `Días: ${days.join(", ")}
 Preferencias: ${preferences}
 ${dietaryRestrictions ? `Restricciones: ${dietaryRestrictions}` : ""}
-${budget ? `Presupuesto: ${budget}€` : ""}
-
-Sugiere 3 productos por día (uno por cada comida). Responde solo con el JSON.`;
+${budget ? `Presupuesto: ${budget}€` : ""}`;
 
         console.log("[suggest-menu] Calling Ollama with model:", model);
 
@@ -130,8 +122,8 @@ Sugiere 3 productos por día (uno por cada comida). Responde solo con el JSON.`;
                     ],
                     stream: false,
                     options: {
-                        temperature: 0.7,
-                        num_predict: 1000,
+                        temperature: 0.3,
+                        num_predict: 800,
                     },
                 }),
                 signal: controller.signal,
@@ -181,40 +173,107 @@ Sugiere 3 productos por día (uno por cada comida). Responde solo con el JSON.`;
         try {
             let content = response.message.content.trim();
             console.log(
-                "[suggest-menu] Parsing response, first 200 chars:",
-                content.substring(0, 200)
+                "[suggest-menu] Raw response:",
+                content.substring(0, 300)
             );
 
-            // Remover bloques de código markdown si existen
-            content = content.replace(/```json\s*/g, "").replace(/```\s*/g, "");
+            content = content
+                .replace(/```json\s*/g, "")
+                .replace(/```\s*/g, "")
+                .trim();
 
-            // Intentar extraer el JSON
-            const jsonMatch = content.match(/\{[\s\S]*\}/);
+            const allSuggestions: MenuSuggestion[] = [];
+            const suggestionMatches = content.matchAll(
+                /\{"productId":"(\d+)","productName":"([^"]+)","price":([\d.]+),"mealType":"([^"]+)","day":"([^"]+)","reason":"([^"]+)"[^}]*\}/g
+            );
 
-            if (jsonMatch) {
-                let jsonStr = jsonMatch[0];
+            let matchCount = 0;
+            for (const match of suggestionMatches) {
+                matchCount++;
+                try {
+                    const suggestion: MenuSuggestion = {
+                        productId: match[1],
+                        productName: match[2],
+                        price: match[3],
+                        thumbnail: "",
+                        mealType: match[4] as "Desayuno" | "Comida" | "Cena",
+                        day: match[5],
+                        reason: match[6],
+                    };
+                    allSuggestions.push(suggestion);
+                } catch (innerError) {
+                    console.warn(
+                        "[suggest-menu] Failed to parse suggestion:",
+                        innerError
+                    );
+                }
+            }
 
-                // Limpiar posibles problemas comunes en el JSON
-                jsonStr = jsonStr
-                    .replace(/,(\s*[}\]])/g, "$1") // Remover comas finales
-                    .replace(/[\u0000-\u001F\u007F-\u009F]/g, ""); // Remover caracteres de control
+            console.log(
+                `[suggest-menu] Found ${matchCount} suggestion object(s)`
+            );
 
-                console.log(
-                    "[suggest-menu] Cleaned JSON, first 300 chars:",
-                    jsonStr.substring(0, 300)
+            if (allSuggestions.length === 0) {
+                const jsonObjects = content.match(
+                    /\{"suggestions":\s*\[[^\]]*\]/g
                 );
 
-                const parsed = JSON.parse(jsonStr);
-                suggestions = parsed.suggestions || [];
-                console.log(
-                    "[suggest-menu] Parsed suggestions count:",
-                    suggestions.length
-                );
-            } else {
-                console.error("[suggest-menu] No JSON found in response");
+                if (jsonObjects && jsonObjects.length > 0) {
+                    console.log(
+                        `[suggest-menu] Fallback: Found ${jsonObjects.length} JSON object(s)`
+                    );
+
+                    for (const jsonStr of jsonObjects) {
+                        try {
+                            const completeJson = jsonStr.endsWith("}")
+                                ? jsonStr
+                                : jsonStr + "}";
+
+                            const cleanedJson = completeJson
+                                .replace(/,\s*,/g, ",")
+                                .replace(/,(\s*[}\]])/g, "$1")
+                                .replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+                                .replace(
+                                    /"(preference|restriction|budget|restricciones)":\s*[^,}\]]+,?/g,
+                                    ""
+                                )
+                                .replace(/"day":"[^"]*",?"day":/g, '"day":');
+
+                            console.log(
+                                "[suggest-menu] Processing JSON:",
+                                cleanedJson.substring(0, 200)
+                            );
+
+                            const parsed = JSON.parse(cleanedJson);
+                            if (
+                                parsed.suggestions &&
+                                Array.isArray(parsed.suggestions)
+                            ) {
+                                allSuggestions.push(...parsed.suggestions);
+                            }
+                        } catch (innerError) {
+                            console.warn(
+                                "[suggest-menu] Failed to parse JSON object:",
+                                innerError,
+                                "- Skipping"
+                            );
+                        }
+                    }
+                }
+            }
+
+            suggestions = allSuggestions;
+
+            console.log(
+                "[suggest-menu] Parsed suggestions:",
+                suggestions.length
+            );
+
+            if (suggestions.length === 0) {
+                console.error("[suggest-menu] No valid suggestions extracted");
                 return NextResponse.json(
                     {
-                        error: "No se pudo obtener una respuesta válida de la IA",
+                        error: "La IA no generó sugerencias válidas. Intenta de nuevo.",
                         rawResponse: content,
                     },
                     { status: 500 }
@@ -224,47 +283,44 @@ Sugiere 3 productos por día (uno por cada comida). Responde solo con el JSON.`;
             console.error("[suggest-menu] Parse error:", parseError);
             return NextResponse.json(
                 {
-                    error: "Error al procesar la respuesta de la IA",
+                    error: "Error al procesar la respuesta de la IA. Intenta de nuevo.",
                     details:
                         parseError instanceof Error
                             ? parseError.message
                             : "Unknown error",
-                    rawResponse: response.message.content,
                 },
                 { status: 500 }
             );
         }
 
-        const validatedSuggestions = suggestions.map((s) => {
-            const product = allProducts.find((p) => p.id === s.productId);
+        const validatedSuggestions = suggestions
+            .map((s) => {
+                const product = allProducts.find((p) => p.id === s.productId);
 
-            if (!product) {
-                console.warn(
-                    `[suggest-menu] Product not found for ID: ${s.productId}`
-                );
-            }
+                if (!product) {
+                    console.warn(
+                        `[suggest-menu] Product not found for ID: ${s.productId}, skipping`
+                    );
+                    return null;
+                }
 
-            return {
-                productId: s.productId,
-                productName: product?.name || s.productName,
-                price: product?.price.toString() || s.price,
-                thumbnail: product?.image || "",
-                mealType: s.mealType,
-                day: s.day,
-                reason: s.reason,
-            };
-        });
+                return {
+                    productId: product.id,
+                    productName: product.name,
+                    price: product.price.toString(),
+                    thumbnail: product.image || "",
+                    mealType: s.mealType,
+                    day: s.day,
+                    reason: s.reason || "Sugerido por IA",
+                };
+            })
+            .filter((s): s is NonNullable<typeof s> => s !== null);
 
         console.log(
-            "[suggest-menu] Returning validated suggestions:",
-            validatedSuggestions.length
+            "[suggest-menu] Returning",
+            validatedSuggestions.length,
+            "validated suggestions"
         );
-
-        console.log("[suggest-menu] Sample suggestion with image:", {
-            productName: validatedSuggestions[0]?.productName,
-            thumbnail: validatedSuggestions[0]?.thumbnail,
-            hasImage: !!validatedSuggestions[0]?.thumbnail,
-        });
 
         return NextResponse.json({
             success: true,
