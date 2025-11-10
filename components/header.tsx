@@ -27,13 +27,15 @@ export function Header() {
                     aria-label="Ir al inicio"
                     className="inline-flex items-center"
                 >
+                    <div className="scale-140">
                     <Image
-                        src={"/mercadona.svg"}
+                        src={"/mercadinar.png"}
                         alt={"Logo de Mercadona"}
                         width={180}
                         height={40}
                         priority
                     />
+                    </div>
                 </Link>
             </div>
 
