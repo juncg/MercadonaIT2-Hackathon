@@ -40,7 +40,7 @@ export default function UserPlansGrid(): JSX.Element | null {
             const mapped = Object.entries(parsed).map(([name, plan]) => ({
                 id: name,
                 title: name,
-                imageUrl: '/plan-user.png',
+                imageUrl: '/cesta-placeholder.jpg',
                 expandedContent: formatPlan(plan),
                 actionHref: `/calendario?plan=${encodeURIComponent(name)}`,
             }))
