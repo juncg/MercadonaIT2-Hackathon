@@ -32,7 +32,7 @@ function ExpandableButton({ item, isExpanded, onToggle, isExpandedView = false }
             variant="outline"
             className={`
         w-full h-full p-4 
-        transition-all duration-300 ease-in-out
+        transition-all duration-300 ease-in-out cursor-pointer
         hover:shadow-lg
         ${isExpanded ? 'border-[var(--mercadona-green)]' : ''}
         ${isExpandedView ? 'p-6' : 'p-4'}

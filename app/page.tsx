@@ -44,10 +44,10 @@ export default function Home() {
                                 <Link href="/planes">
                                     <Button
                                         size="lg"
-                                        className="bg-mercadona-green hover:bg-mercadona-green/90 text-lg px-8"
+                                        className="bg-mercadona-green hover:bg-mercadona-green/90 text-lg px-8 cursor-pointer"
                                     >
                                         <ShoppingCart className="mr-2 h-5 w-5" />
-                                        Crear mi menú
+                                        Explorar Planes
                                     </Button>
                                 </Link>
                                 <a href="https://www.google.com/maps/search/Mercadona+Espa%C3%B1a" target="_blank" rel="noopener noreferrer">
@@ -55,7 +55,7 @@ export default function Home() {
                                     <Button
                                         variant="outline"
                                         size="lg"
-                                        className="text-lg px-8"
+                                        className="text-lg px-8 cursor-pointer"
                                     >
                                         <MapPin className="mr-2 h-5 w-5" />
                                         Encontrar tienda
@@ -185,7 +185,7 @@ export default function Home() {
                                             {product.name}
                                         </h3>
                                         <Link href="/planes">
-                                            <Button className="w-full bg-mercadona-green hover:bg-mercadona-green/90">
+                                            <Button className="w-full bg-mercadona-green hover:bg-mercadona-green/90 cursor-pointer">
                                                 <ShoppingCart className="mr-2 h-4 w-4" />
                                                 Añadir al carro
                                             </Button>
@@ -201,7 +201,7 @@ export default function Home() {
                             <Button
                                 variant="outline"
                                 size="lg"
-                                className="px-8"
+                                className="px-8 cursor-pointer"
                             >
                                 Ver todos los planes alimenticios
                             </Button>
@@ -264,7 +264,7 @@ export default function Home() {
                                     <Link href={service.link}>
                                         <Button
                                             variant="outline"
-                                            className="mt-4"
+                                            className="mt-4 cursor-pointer"
                                         >
                                             Más información
                                         </Button>
@@ -399,7 +399,7 @@ export default function Home() {
                                 placeholder="Tu email"
                                 className="bg-white text-gray-900"
                             />
-                            <Button className="bg-white text-mercadona-green hover:bg-gray-100">
+                            <Button className="bg-white text-mercadona-green hover:bg-gray-100 cursor-pointer">
                                 <Mail className="mr-2 h-4 w-4" />
                                 Suscribirse
                             </Button>
