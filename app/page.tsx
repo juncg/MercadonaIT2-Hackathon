@@ -96,7 +96,7 @@ export default function Home() {
                                             src="/comida-sana-menu.jpg"
                                             alt="Not loading"
                                             fill
-                                            className="object-contain">
+                                            className="object-cover">
                                         </Image>
                                     </div>
                                 </div>
