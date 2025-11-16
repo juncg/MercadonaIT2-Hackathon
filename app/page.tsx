@@ -187,25 +187,13 @@ export default function Home() {
                                         <Link href="/planes">
                                             <Button className="w-full bg-mercadona-green hover:bg-mercadona-green/90 cursor-pointer">
                                                 <ShoppingCart className="mr-2 h-4 w-4" />
-                                                Añadir al carro
+                                                Explorar Planes
                                             </Button>
                                         </Link>
                                     </div>
                                 </CardContent>
                             </Card>
                         ))}
-                    </div>
-
-                    <div className="text-center mt-12">
-                        <Link href="/planes">
-                            <Button
-                                variant="outline"
-                                size="lg"
-                                className="px-8 cursor-pointer"
-                            >
-                                Ver todos los planes alimenticios
-                            </Button>
-                        </Link>
                     </div>
                 </div>
             </section>
@@ -230,21 +218,21 @@ export default function Home() {
                                 title: "Entrega a domicilio",
                                 description:
                                     "Recibe tu pedido en casa en menos de 1 hora",
-                                link: "/products",
+                                link: "/sobre-nosotros",
                             },
                             {
                                 icon: <Store className="h-12 w-12" />,
                                 title: "Compra en tienda",
                                 description:
                                     "Visita cualquiera de nuestras +1.600 tiendas",
-                                link: "/supermarkets",
+                                link: "/sobre-nosotros",
                             },
                             {
                                 icon: <MapPin className="h-12 w-12" />,
                                 title: "Mercadona sobre ruedas",
                                 description:
-                                    "El supermercado móvil llega hasta tu barrio",
-                                link: "/mercadona-sobre-ruedas",
+                                    "Los planes llegan directos a tu puerta cuando los necesites",
+                                link: "/sobre-nosotros",
                             },
                         ].map((service, index) => (
                             <Card
